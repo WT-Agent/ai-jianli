@@ -2,8 +2,8 @@
   <section class="nomads-showcase-section">
     <div class="showcase-header">
       <div class="header-left">
-        <h2 class="showcase-title">求职简历诊断与精修专家实战模板库</h2>
-        <p class="showcase-subtitle">精选典型场景与实战模版，点击“一键套用”快速体验</p>
+        <h2 class="showcase-title">实战案例与模板库 (Nomads Showcase)</h2>
+        <p class="showcase-subtitle">精选高频实战场景，点击“一键套用”快速生成高质量结果</p>
       </div>
       <span class="showcase-badge">已收录 {{ showcaseItems.length }} 个实战模板</span>
     </div>
@@ -16,7 +16,7 @@
       >
         <div class="card-header">
           <span class="scenario-tag">{{ item.tag }}</span>
-          <span class="usage-count">{{ item.usageCount }} 次生成</span>
+          <span class="usage-count">{{ item.usageCount }} 次应用</span>
         </div>
 
         <div class="card-content">
@@ -41,8 +41,13 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+const props = defineProps<{
+  appTitle?: string;
+  isImage?: boolean;
+}>();
+
 const emit = defineEmits<{
-  (e: 'apply-template', payload: { prompt: string }): void;
+  (e: 'apply-template', payload: { prompt: string; style?: string }): void;
 }>();
 
 export interface ShowcaseItem {
@@ -50,57 +55,105 @@ export interface ShowcaseItem {
   tag: string;
   title: string;
   prompt: string;
+  style?: string;
   usageCount: string;
 }
 
-const showcaseItems = computed<ShowcaseItem[]>(() => [
-  {
-    id: 'ai-jianli-1',
-    tag: '产品经理',
-    title: '互联网大厂 P7 产品经理简历重构',
-    prompt: '精修 5 年互联网产品经理简历，突出日活提升 40%、项目延期率降低 25% 等量化指标。',
-    usageCount: '54.2k'
-  },
-  {
-    id: 'ai-jianli-2',
-    tag: '应届生',
-    title: '双非本科零经验简历挖掘与包装',
-    prompt: '为双非应届毕业生挖掘校园社团、竞赛及课程大作业亮点，重构为符合 HR 筛选的标准简历。',
-    usageCount: '48.9k'
-  },
-  {
-    id: 'ai-jianli-3',
-    tag: '开发工程师',
-    title: '资深 Java 架构师技术履历提炼',
-    prompt: '优化 8 年 Java 后端架构师简历，突出高并发秒杀系统设计、微服务治理与带团队成效。',
-    usageCount: '42.1k'
-  },
-  {
-    id: 'ai-jianli-4',
-    tag: '市场营销',
-    title: '品牌市场经理活动 ROI 成果简历',
-    prompt: '重构市场营销经理简历，强化 618 营销全案 ROI 1:4.5 及全网曝光量 1 亿的量化体现。',
-    usageCount: '39.7k'
-  },
-  {
-    id: 'ai-jianli-5',
-    tag: '职场转型',
-    title: '传统制造业转型新能源项目简历',
-    prompt: '帮助传统制造供应链主管转战新能源汽车行业，突出项目管理经验与跨界适应力。',
-    usageCount: '35.4k'
-  },
-  {
-    id: 'ai-jianli-6',
-    tag: '高管简历',
-    title: '事业部总经理千万级营收履历',
-    prompt: '精修事业部总经理简历，突出 0-1 组建团队、年营收突破 8000 万的战略管理亮点。',
-    usageCount: '31.2k'
+// 模拟实战案例数据库（支持根据文本/图像类及应用主题切换）
+const showcaseItems = computed<ShowcaseItem[]>(() => {
+  if (props.isImage) {
+    return [
+      {
+        id: 'img-1',
+        tag: '写真肖像',
+        title: '商务精英形象照',
+        prompt: '高端写字楼背景，身穿深蓝色西装，眼神自信专注，赛博朋克光影效果',
+        style: '<photography>',
+        usageCount: '18.5k'
+      },
+      {
+        id: 'img-2',
+        tag: '概念插画',
+        title: '未来科幻城市海报',
+        prompt: '霓虹灯光的赛博朋克立体城市，飞行汽车，高品质概念插画，8k分辨率',
+        style: '<illustration>',
+        usageCount: '24.1k'
+      },
+      {
+        id: 'img-3',
+        tag: '二次元动漫',
+        title: '日系国潮动漫角色',
+        prompt: '穿着现代汉服的国风少年，手持纸伞，水彩漫感，唯美光感与柔光滤镜',
+        style: '<anime>',
+        usageCount: '15.9k'
+      },
+      {
+        id: 'img-4',
+        tag: '水彩艺术',
+        title: '治愈系自然风景画',
+        prompt: '晨雾中的森林湖泊，阳光穿透树林，水彩渐变质感，温馨治愈风格',
+        style: '<watercolor>',
+        usageCount: '12.3k'
+      }
+    ];
+  } else {
+    return [
+      {
+        id: 'text-1',
+        tag: '职场总结',
+        title: '周报 OKR 成果提炼',
+        prompt: '本周完成了核心模块优化与线上异常排查，请帮我梳理为具备量化指标的 OKR 汇报文案',
+        style: '专业干练，结果导向',
+        usageCount: '32.8k'
+      },
+      {
+        id: 'text-2',
+        tag: '高情商沟通',
+        title: '拒绝不合理加班话术',
+        prompt: '领导在周末突然布置非紧急任务，如何高情商、委婉且有理有据地推迟到工作日处理？',
+        style: '高情商，委婉，有情调',
+        usageCount: '28.4k'
+      },
+      {
+        id: 'text-3',
+        tag: '短视频文案',
+        title: '知识干货吸睛开头',
+        prompt: '准备制作一条关于高效学习法的短视频，设计 3 个能在前 3 秒留住用户的爆款口播开头',
+        style: '专业干练，结果导向',
+        usageCount: '45.1k'
+      },
+      {
+        id: 'text-4',
+        tag: '商务公文',
+        title: '跨部门协同申请函',
+        prompt: '因项目上线需要研发部门配合联调，撰写一份正式、严谨且明确时间节点的协同申请书',
+        style: '专业干练，结果导向',
+        usageCount: '19.7k'
+      },
+      {
+        id: 'text-5',
+        tag: '小红书种草',
+        title: '实战干货笔记排版',
+        prompt: '分享 5 个提升日常工作效率的文字工具，语言亲切，搭配吸引人的标题与 Emoji 排版',
+        style: '高情商，委婉，有情调',
+        usageCount: '36.2k'
+      },
+      {
+        id: 'text-6',
+        tag: '学术润色',
+        title: '论文摘要与结论重构',
+        prompt: '将以下粗糙的研究结论重写为学术规范、逻辑严密且无语法语病的论文摘要总结',
+        style: '专业干练，结果导向',
+        usageCount: '22.0k'
+      }
+    ];
   }
-]);
+});
 
 function applyTemplate(item: ShowcaseItem) {
   emit('apply-template', {
-    prompt: item.prompt
+    prompt: item.prompt,
+    style: item.style
   });
 }
 </script>
